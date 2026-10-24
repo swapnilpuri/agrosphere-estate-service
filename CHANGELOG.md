@@ -2,6 +2,8 @@
 
 ## 0.2.1 — 2026-10-24
 
+Additive V3 durable outbox W3C transport metadata, observed Rabbit publication, message correlation IDs and bounded JSON ingress. Existing API/event/domain semantics and V1/V2 migrations preserved.
+
 Optional container-reachable JWKS URL while preserving exact public issuer/audience/signature/lifetime checks; independent image version and local integration documentation. No business, migration or contract changes.
 
 ## 0.2.0 — Milestone 1A

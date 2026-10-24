@@ -1,0 +1,38 @@
+# Synthetic fixtures. Set EVENT_DATA_PROVENANCE=SIMULATED for this demo.
+@base = http://localhost:8081/api/v1
+@token = REPLACE_WITH_VALID_PLATFORM_ADMIN_JWT
+@estateId = REPLACE_WITH_CREATED_ESTATE_UUID
+@divisionId = REPLACE_WITH_CREATED_DIVISION_UUID
+
+### 1. Create a rubber estate (copy response id to estateId)
+POST {{base}}/estates
+Authorization: Bearer {{token}}
+Content-Type: application/json
+X-Correlation-ID: 00000000-0000-0000-0000-000000000099
+
+{"estateCode":"DEMO-RUBBER","name":"Synthetic Rubber Estate","countryCode":"LK","timezone":"Asia/Colombo","totalAreaHectares":100,"status":"ACTIVE"}
+
+### 2. Create a division (copy response id to divisionId)
+POST {{base}}/estates/{{estateId}}/divisions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"estateId":"{{estateId}}","divisionCode":"NORTH","name":"North Division","status":"ACTIVE"}
+
+### 3. Register a rubber clone
+POST {{base}}/rubber-clones
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"cloneCode":"RRIC100","description":"Synthetic demo clone registration","status":"ACTIVE"}
+
+### 4. Create a plantation block
+POST {{base}}/divisions/{{divisionId}}/blocks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"estateId":"{{estateId}}","divisionId":"{{divisionId}}","blockCode":"N-01","name":"North Block 01","cropType":"RUBBER","rubberCloneCode":"RRIC100","plantingDate":"2020-01-01","plantedAreaHectares":2.5,"plantedTreeCount":100,"tappableTreeCount":70,"status":"ACTIVE"}
+
+### 5. Retrieve plantation blocks
+GET {{base}}/estates/{{estateId}}/blocks?status=ACTIVE&page=0&size=20
+Authorization: Bearer {{token}}

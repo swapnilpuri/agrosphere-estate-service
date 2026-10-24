@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: agrosphere-estate-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OIDC_ISSUER_URI}
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  rabbitmq:
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+      observation-enabled: true
+    port: ${RABBITMQ_PORT:5672}
+    host: ${RABBITMQ_HOST:localhost}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
+server:
+  port: ${SERVER_PORT:8081}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
+        liveness:
+          include: livenessState
+  health:
+    rabbit:
+      enabled: ${OUTBOX_PUBLICATION_ENABLED:false}
+  otlp:
+    metrics:
+      export:
+        enabled: ${OTEL_METRICS_ENABLED:false}
+  tracing:
+    sampling:
+      probability: 0.1
+
+estate:
+  data-provenance: ${EVENT_DATA_PROVENANCE:REAL}
+  security:
+    audience: ${OIDC_AUDIENCE:estate-service}
+  outbox:
+    enabled: ${OUTBOX_PUBLICATION_ENABLED:false}
+    max-attempts: ${OUTBOX_MAX_ATTEMPTS:10}
+    batch-size: ${OUTBOX_BATCH_SIZE:20}
+    retry-seconds: ${OUTBOX_RETRY_SECONDS:5}
+    confirm-timeout-seconds: ${OUTBOX_CONFIRM_TIMEOUT_SECONDS:5}
+    poll-ms: ${OUTBOX_POLL_MS:1000}
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+    org.hibernate.orm.jdbc.error: ERROR
+  pattern:
+    level: "%5p [correlationId=%X{correlationId:-}]"
+
+# Structured common fields are also present outside an active trace.

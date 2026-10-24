@@ -15,7 +15,7 @@ public class SecurityConfiguration {
             Object realm = jwt.getClaim("realm_access");
             if (!(realm instanceof Map<?,?> map) || !(map.get("roles") instanceof Collection<?> roles)) return List.of();
             return roles.stream().filter(String.class::isInstance).map(Object::toString)
-                .filter(Set.of("PLATFORM_ADMIN","ESTATE_ADMIN","ESTATE_MANAGER","VIEWER")::contains)
+                .filter(Set.of("PLATFORM_ADMIN","ESTATE_ADMIN","ESTATE_MANAGER","VIEWER","FIELD_SUPERVISOR","FIELD_WORKER","AUDITOR","PLANTATION_ADMIN")::contains)
                 .map(r -> (org.springframework.security.core.GrantedAuthority)new SimpleGrantedAuthority("ROLE_"+r)).toList();
         });
         return http.csrf(csrf -> csrf.disable()).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

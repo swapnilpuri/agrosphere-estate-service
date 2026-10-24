@@ -12,6 +12,7 @@ class EstateAuthorizationTest {
     JwtEstateAccess access=new JwtEstateAccess(); UUID estate=DomainRulesTest.ESTATE;
     void login(String role,Object ids) { var jwt=Jwt.withTokenValue("test").header("alg","RS256").claim("sub","test-user").claim("estate_ids",ids).build(); SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt,List.of(new SimpleGrantedAuthority("ROLE_"+role)))); }
     @AfterEach void clear() { SecurityContextHolder.clearContext(); }
+    @Test void operationalRolesCanReadScopedMasterDataButCannotWrite() { for(String role:List.of("FIELD_WORKER","FIELD_SUPERVISOR","AUDITOR")) { login(role,List.of(estate.toString()));access.read(estate);assertThrows(AccessDeniedException.class,()->access.read(DomainRulesTest.DIVISION));assertThrows(AccessDeniedException.class,()->access.write(estate)); } }
     @Test void viewerCanReadAssignedEstate() { login("VIEWER",List.of(estate.toString()));assertDoesNotThrow(()->access.read(estate)); }
     @Test void viewerCannotWrite() { login("VIEWER",List.of(estate.toString()));assertThrows(AccessDeniedException.class,()->access.write(estate)); }
     @Test void managerCannotReadOrWriteAnotherEstate() { login("ESTATE_MANAGER",List.of(estate.toString()));assertThrows(AccessDeniedException.class,()->access.read(DomainRulesTest.DIVISION));assertThrows(AccessDeniedException.class,()->access.write(DomainRulesTest.DIVISION)); }

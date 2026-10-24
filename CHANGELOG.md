@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2 — 2026-10-24
+
+Allow operational workers/supervisors/auditors to read authorized estate/block metadata for authenticated tapping validation; preserve master-data write rules.
+
 ## 0.2.1 — 2026-10-24
 
 Additive V3 durable outbox W3C transport metadata, observed Rabbit publication, message correlation IDs and bounded JSON ingress. Existing API/event/domain semantics and V1/V2 migrations preserved.

@@ -15,8 +15,8 @@ public class JwtEstateAccess implements EstateAccess {
     private boolean role(String... roles) { var jwt=token(); return jwt.getAuthorities().stream().anyMatch(a -> Arrays.stream(roles).anyMatch(r -> a.getAuthority().equals("ROLE_"+r))); }
     @Override public void platformAdmin() { if(!role("PLATFORM_ADMIN")) throw new AccessDeniedException("Platform administrator required"); }
     @Override public Set<UUID> readableEstates() {
-        if(role("PLATFORM_ADMIN")) return null;
-        if(!role("ESTATE_ADMIN","ESTATE_MANAGER","VIEWER")) throw new AccessDeniedException("Estate role required");
+        if(role("PLATFORM_ADMIN","PLANTATION_ADMIN")) return null;
+        if(!role("ESTATE_ADMIN","ESTATE_MANAGER","VIEWER","FIELD_SUPERVISOR","FIELD_WORKER","AUDITOR")) throw new AccessDeniedException("Estate role required");
         Object claim=token().getToken().getClaim("estate_ids");
         if(!(claim instanceof Collection<?> ids) || ids.size()>1000) throw new AccessDeniedException("Invalid estate scope");
         var result=new HashSet<UUID>();
